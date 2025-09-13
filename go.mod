@@ -1,4 +1,4 @@
-module github.com/joaoparis/go-pong
+module go-pong
 
 go 1.25.0
 
