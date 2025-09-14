@@ -1,6 +1,7 @@
 package game
 
 import (
+	"go-pong/internal/types"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -8,9 +9,9 @@ import (
 )
 
 type Ball struct {
-	Pos      Double
-	Size     Double
-	Velocity Double
+	Pos      types.Double
+	Size     types.Double
+	Velocity types.Double
 	NumHits  float32
 }
 

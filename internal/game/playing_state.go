@@ -1,6 +1,7 @@
 package game
 
 import (
+	"go-pong/internal/types"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -40,7 +41,7 @@ func (ps *PlayingState) Update(game *Game) error {
 	return nil
 }
 
-func DrawText(screen *ebiten.Image, msg string, size Double) {
+func DrawText(screen *ebiten.Image, msg string, size types.Double) {
 	face := text.NewGoXFace(basicfont.Face7x13)
 	opts := &text.DrawOptions{}
 	opts.GeoM.Translate(float64(size.X/2), float64(size.Y/2))

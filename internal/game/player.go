@@ -1,6 +1,7 @@
 package game
 
 import (
+	"go-pong/internal/types"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -8,14 +9,14 @@ import (
 )
 
 type Player struct {
-	Pos      Double
-	Size     Double
+	Pos      types.Double
+	Size     types.Double
 	Velocity float32
 	Color    color.Color
-	Keys     Keys
+	Keys     types.Keys
 }
 
-func (p *Player) MoveY(screen *GameScreen) {
+func (p *Player) MoveY(screen *types.GameScreen) {
 	if ebiten.IsKeyPressed(p.Keys.Up) && (p.Pos.Y-p.Velocity) >= 0 {
 		p.Pos.Y -= p.Velocity
 	}
