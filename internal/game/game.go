@@ -1,6 +1,7 @@
 package game
 
 import (
+	"go-pong/internal/types"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,7 +13,7 @@ type Game struct {
 	Ball       Ball
 	Player1    Player
 	Player2    Player
-	GameScreen GameScreen
+	GameScreen types.GameScreen
 	IsGoal     bool
 	IsPaused   bool
 }
@@ -27,15 +28,15 @@ func (g *Game) Start() {
 	playerVelocity := float32(5)
 
 	ball := Ball{
-		Pos: Double{
+		Pos: types.Double{
 			X: g.GameScreen.Size.X/2 - float32(ballSizeX)/2,
 			Y: g.GameScreen.Size.Y/2 - float32(ballSizeY)/2,
 		},
-		Size: Double{
+		Size: types.Double{
 			X: float32(ballSizeX),
 			Y: float32(ballSizeY),
 		},
-		Velocity: Double{
+		Velocity: types.Double{
 			X: float32(ballVelocity),
 			Y: float32(ballVelocity),
 		},
@@ -43,34 +44,34 @@ func (g *Game) Start() {
 	}
 
 	player1 := Player{
-		Pos: Double{
+		Pos: types.Double{
 			X: float32(playerBoundGap),
 			Y: g.GameScreen.Size.Y/2 - float32(playerSizeY)/2,
 		},
-		Size: Double{
+		Size: types.Double{
 			X: float32(playerSizeX),
 			Y: float32(playerSizeY),
 		},
 		Velocity: playerVelocity,
 		Color:    color.RGBA{R: 255, G: 0, B: 0, A: 255},
-		Keys: Keys{
+		Keys: types.Keys{
 			Up:   ebiten.KeyW,
 			Down: ebiten.KeyS,
 		},
 	}
 
 	player2 := Player{
-		Pos: Double{
+		Pos: types.Double{
 			X: g.GameScreen.Size.X - float32(playerSizeX+playerBoundGap),
 			Y: g.GameScreen.Size.Y/2 - float32(playerSizeY)/2,
 		},
-		Size: Double{
+		Size: types.Double{
 			X: float32(playerSizeX),
 			Y: float32(playerSizeY),
 		},
 		Velocity: playerVelocity,
 		Color:    color.RGBA{R: 0, G: 0, B: 255, A: 255},
-		Keys: Keys{
+		Keys: types.Keys{
 			Up:   ebiten.KeyUp,
 			Down: ebiten.KeyDown,
 		},
@@ -100,7 +101,7 @@ func (g *Game) StateUpdate(screen *ebiten.Image) {
 	if g.IsGoal {
 		DrawText(screen, "GOAL", g.GameScreen.Size)
 		lobbyState := &LobbyState{}
-		g.GameState = lobbyState.New(g.GameScreen.Size)
+		g.GameState = lobbyState
 	} else if g.IsPaused {
 		DrawText(screen, "PAUSE", g.GameScreen.Size)
 	}

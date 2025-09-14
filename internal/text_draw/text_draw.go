@@ -14,9 +14,13 @@ import (
 	"golang.org/x/image/font/opentype"
 )
 
+type GameContext interface {
+	Start()
+}
+
 type MenuItem struct {
 	Name string
-	Action func()
+	Action func(game GameContext)
 }
 
 type Menu struct {
