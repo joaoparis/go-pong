@@ -14,6 +14,7 @@ type Player struct {
 	Velocity float32
 	Color    color.Color
 	Keys     types.Keys
+	Score int
 }
 
 func (p *Player) MoveY(screen *types.GameScreen) {
