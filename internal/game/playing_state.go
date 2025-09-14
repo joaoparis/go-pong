@@ -1,15 +1,12 @@
 package game
 
 import (
-	"go-pong/internal/types"
-	"image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/text/v2"
-	"golang.org/x/image/font/basicfont"
 )
 
 type PlayingState struct {
+	LPlayerScore int
+	RPlayerScore int
 }
 
 func (ps *PlayingState) Layout(outsideWidth, outsideHeight *int) (screenWidth, screenHeight int) {
@@ -24,14 +21,21 @@ func (ps *PlayingState) Draw(screen *ebiten.Image, game *Game) {
 }
 
 func (ps *PlayingState) Update(game *Game) error {
-	if ebiten.IsKeyPressed(ebiten.KeyR) {
-		game.Start()
-	}
+	// if ebiten.IsKeyPressed(ebiten.KeyR) {
+	// 	game.Start()
+	// }
 	if game.isGamePaused() {
 		return nil
 	}
 	if game.IsGoal {
-		return nil
+		game.messageTicks--
+
+		if game.messageTicks == 0 {
+			game.RespawnBall = true;
+		}
+	}
+	if game.RespawnBall {
+		game.Continue(ps)
 	}
 
 	game.Ball.Move(game)
@@ -39,12 +43,4 @@ func (ps *PlayingState) Update(game *Game) error {
 	game.Player2.MoveY(&game.GameScreen)
 
 	return nil
-}
-
-func DrawText(screen *ebiten.Image, msg string, size types.Double) {
-	face := text.NewGoXFace(basicfont.Face7x13)
-	opts := &text.DrawOptions{}
-	opts.GeoM.Translate(float64(size.X/2), float64(size.Y/2))
-	opts.ColorScale.ScaleWithColor(color.RGBA{R: 255, G: 255, B: 255, A: 255})
-	text.Draw(screen, msg, face, opts)
 }
