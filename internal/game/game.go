@@ -1,11 +1,20 @@
 package game
 
 import (
+	"fmt"
+	"go-pong/internal/text_draw"
 	"go-pong/internal/types"
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+)
+
+var (
+	BallSizeX = 20
+	BallSizeY = 20
+	BallVelocity = 2
+	MessageTicks = 120
 )
 
 type Game struct {
@@ -16,12 +25,11 @@ type Game struct {
 	GameScreen types.GameScreen
 	IsGoal     bool
 	IsPaused   bool
+	RespawnBall	bool
+	messageTicks int
 }
 
 func (g *Game) Start() {
-	ballSizeX := 20
-	ballSizeY := 20
-	ballVelocity := 2
 	playerBoundGap := 10
 	playerSizeX := 20
 	playerSizeY := 100
@@ -29,16 +37,16 @@ func (g *Game) Start() {
 
 	ball := Ball{
 		Pos: types.Double{
-			X: g.GameScreen.Size.X/2 - float32(ballSizeX)/2,
-			Y: g.GameScreen.Size.Y/2 - float32(ballSizeY)/2,
+			X: g.GameScreen.Size.X/2 - float32(BallSizeX)/2,
+			Y: g.GameScreen.Size.Y/2 - float32(BallSizeY)/2,
 		},
 		Size: types.Double{
-			X: float32(ballSizeX),
-			Y: float32(ballSizeY),
+			X: float32(BallSizeX),
+			Y: float32(BallSizeY),
 		},
 		Velocity: types.Double{
-			X: float32(ballVelocity),
-			Y: float32(ballVelocity),
+			X: float32(BallVelocity),
+			Y: float32(BallVelocity),
 		},
 		NumHits: 0,
 	}
@@ -58,6 +66,7 @@ func (g *Game) Start() {
 			Up:   ebiten.KeyW,
 			Down: ebiten.KeyS,
 		},
+		Score: 0,
 	}
 
 	player2 := Player{
@@ -75,6 +84,7 @@ func (g *Game) Start() {
 			Up:   ebiten.KeyUp,
 			Down: ebiten.KeyDown,
 		},
+		Score: 0,
 	}
 
 	g.Ball = ball
@@ -83,6 +93,7 @@ func (g *Game) Start() {
 	g.IsGoal = false
 	g.IsPaused = false
 	g.GameState = &PlayingState{}
+	g.messageTicks = MessageTicks
 }
 
 func (game *Game) isGamePaused() bool {
@@ -99,10 +110,32 @@ func (game *Game) isGamePaused() bool {
 
 func (g *Game) StateUpdate(screen *ebiten.Image) {
 	if g.IsGoal {
-		DrawText(screen, "GOAL", g.GameScreen.Size)
-		lobbyState := &LobbyState{}
-		g.GameState = lobbyState
+		text_draw.CenterText(screen, fmt.Sprintf("GOAL\nScore: %v : %v", g.Player1.Score, g.Player2.Score), 50);
 	} else if g.IsPaused {
-		DrawText(screen, "PAUSE", g.GameScreen.Size)
+		text_draw.CenterText(screen, "Pause", 50);
 	}
+}
+
+func (g *Game) Continue(ps *PlayingState) {
+	g.IsGoal = false;
+	g.RespawnBall = false;
+
+	// todo: Reset Player Position
+	g.Ball = Ball{
+		Pos: types.Double{
+			X: g.GameScreen.Size.X/2 - float32(BallSizeX)/2,
+			Y: g.GameScreen.Size.Y/2 - float32(BallSizeY)/2,
+		},
+		Size: types.Double{
+			X: float32(BallSizeX),
+			Y: float32(BallSizeY),
+		},
+		Velocity: types.Double{
+			X: float32(BallVelocity),
+			Y: float32(BallVelocity),
+		},
+		NumHits: 0,
+	}
+	g.GameState = ps;
+	g.messageTicks = MessageTicks
 }

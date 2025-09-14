@@ -16,13 +16,20 @@ type Ball struct {
 }
 
 func (b *Ball) Move(g *Game) {
+	if g.IsGoal {
+		return 
+	}
+	
 	if b.Pos.Y+b.Velocity.Y <= 0 || b.Pos.Y+b.Size.Y+b.Velocity.Y >= g.GameScreen.Size.Y {
 		b.Velocity.Y *= -1
 	}
-	if b.Pos.X+b.Velocity.X <= 0 || b.Pos.X+b.Size.X+b.Velocity.X == g.GameScreen.Size.X {
-		print("GOAL!!!!")
-		g.IsGoal = true
-		return
+
+	if b.Pos.X <= 0 {
+		g.Player1.Score += 1;
+		g.IsGoal = true;
+	} else if b.Pos.X >= g.GameScreen.Size.X {
+		g.Player2.Score += 1;
+		g.IsGoal = true;
 	}
 
 	b.PlayerCollision(b.Pos.X <= g.Player1.Pos.X+g.Player1.Size.X, &g.Player1)
